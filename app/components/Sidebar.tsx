@@ -3,7 +3,7 @@ import { Link } from "react-router"
 
 export default function Sidebar() {
     return (
-        <div className="w-15 h-screen bg-bg-secondary flex flex-col justify-between border-r border-r-[#3D3D39]">
+        <div className="w-15 shrink-0 h-screen bg-bg-secondary flex flex-col justify-between border-r border-r-[#3D3D39]">
             <div>
                 <Link
                     to="/"
