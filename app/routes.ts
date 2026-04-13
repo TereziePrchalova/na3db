@@ -6,4 +6,5 @@ export default [
         route("questions", "routes/questions.tsx"),
         route("report", "routes/report.tsx"),
     ]),
+    route("entries", "routes/api/api.entries.ts")
 ] satisfies RouteConfig;
