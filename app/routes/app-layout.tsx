@@ -1,25 +1,17 @@
-import { Outlet, useLoaderData } from "react-router"
-import { useState } from "react";
+import { Outlet } from "react-router"
 import Sidebar from "~/components/Sidebar"
 import Results from "~/components/Results";
-import { getEntries } from "~/lib/entries.server";
-
-export async function loader() {
-  const entries = await getEntries();
-  return { entries };
-}
-
+import { useStructureSearch } from "~/hooks/useStructureSearch";
 
 export default function AppLayout() {
-    const { entries } = useLoaderData<typeof loader>();
-    const [isPanelOpen, setIsPanelOpen] = useState(false);
+    const { results } = useStructureSearch();
 
     return (
         <div className="flex h-screen w-screen">
             <Sidebar />
-            <Outlet/>
+            <Outlet />
             <div className="hidden w-full h-full lg:block">
-                <Results entries={entries} />
+                <Results results={results} />
             </div>
         </div>
     )

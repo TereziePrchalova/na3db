@@ -1,10 +1,10 @@
 import type { Entry } from "~/lib/entries.server";
 
 type ResultsProps = {
-  entries: Entry[];
+  results: Entry[];
 };
 
-export default function Results({ entries }: ResultsProps) {
+export default function Results({ results }: ResultsProps) {
 
     return (
         <div className="h-full w-full">
@@ -14,7 +14,7 @@ export default function Results({ entries }: ResultsProps) {
                 </h1>
             </div>
             <div>
-                {entries.map((entry) => (
+                {results.map((entry) => (
                     <div key={entry.pdbId} className="border-b border-b-[#2E2E2B] h-15 flex items-center px-6">
                         <div className="font-medium text-sm w-15 mr-4 shrink-0">{entry.pdbId}</div>
                         <div className="flex justify-between w-full">
