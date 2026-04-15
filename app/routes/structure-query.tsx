@@ -70,6 +70,24 @@ export default function StructureQuery() {
                     value={assignedNtc}
                     setValue={setAssignedNtc}
                 />
+            </CategoryWrapper>
+
+            <CategoryWrapper title="Structure Components" color="#BA7517">
+                <FormInput
+                    label="Entity name"
+                    value={entityName}
+                    setValue={setEntityName}
+                />
+                <FormInput
+                    label="Source organism"
+                    value={sourceOrganism}
+                    setValue={setSourceOrganism}
+                />
+                <FormInput
+                    label="Non-standard residue"
+                    value={nonStandardResidue}
+                    setValue={setNonStandardResidue}
+                />
                 <OptionInput
                     label="Polymer type"
                     options={[
@@ -89,24 +107,6 @@ export default function StructureQuery() {
                         { value: "Standard", label: "Standard"},
                         { value: "Non-Standard", label: "Non-Standard" },
                     ]}
-                />
-            </CategoryWrapper>
-
-            <CategoryWrapper title="Structure Components" color="#BA7517">
-                <FormInput
-                    label="Entity name"
-                    value={entityName}
-                    setValue={setEntityName}
-                />
-                <FormInput
-                    label="Source organism"
-                    value={sourceOrganism}
-                    setValue={setSourceOrganism}
-                />
-                <FormInput
-                    label="Non-standard residue"
-                    value={nonStandardResidue}
-                    setValue={setNonStandardResidue}
                 />
             </CategoryWrapper>
             <div className="m-4">
