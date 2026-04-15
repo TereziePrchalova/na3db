@@ -11,7 +11,7 @@ type OptionInputProps = {
 
 export default function OptionInput({ label, options }: OptionInputProps) {
     return (
-        <>
+        <div className="mb-4">
             <div className="font-medium text-xs mb-1 pl-1">
                 {label}
             </div>
@@ -23,6 +23,6 @@ export default function OptionInput({ label, options }: OptionInputProps) {
                     </button>
                 ))}
             </div>
-        </>
+        </div>
     )
 }
