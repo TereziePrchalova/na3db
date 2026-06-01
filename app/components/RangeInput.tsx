@@ -1,13 +1,13 @@
-import { useState } from "react";
+import type { UseFormRegister } from "react-hook-form";
 import FormInput from "./FormInput";
 
 type RangeInputProps = {
-    label: string
+    label: string;
+    registrationMin?: ReturnType<UseFormRegister<any>>;
+    registrationMax?: ReturnType<UseFormRegister<any>>;
 }
 
-export default function RangeInput({ label }: RangeInputProps) {
-    const [min, setMin] = useState("");
-    const [max, setMax] = useState("");
+export default function RangeInput({ label, registrationMin, registrationMax }: RangeInputProps) {
 
     return (
         <div className="w-full">
@@ -17,14 +17,12 @@ export default function RangeInput({ label }: RangeInputProps) {
             <div className="flex justify-between">
                 <FormInput
                     placeholder="min"
-                    value={min}
-                    setValue={setMin}
+                    registration={registrationMin}
                 />
                 <div className="h-0.5 bg-[#C4C4BE] w-2 shrink-0 rounded-full my-auto mx-4 mb-8" />   
                 <FormInput
                     placeholder="max"
-                    value={max}
-                    setValue={setMax}
+                    registration={registrationMax}
                 />
             </div>
         </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import CategoryWrapper from "~/components/CategoryWrapper";
 import FormInput from "~/components/FormInput";
 import OptionInput from "~/components/OptionInput";
@@ -6,19 +6,31 @@ import RangeInput from "~/components/RangeInput";
 import SectionWrapper from "~/components/SectionWrapper";
 import { useStructureSearch } from "~/hooks/useStructureSearch";
 
-export default function StructureQuery() {
-    const { setSearchParams } = useStructureSearch();
-    const [pdbIdInput, setPdbIdInput] = useState("");
-    const [authorInput, setAuthorInput] = useState("");
-    const [assignedNtc, setAssignedNtc] = useState("");
-    const [entityName, setEntityName] = useState("");
-    const [sourceOrganism, setSourceOrganism] = useState("");
-    const [nonStandardResidue, setNonStandardResidue] = useState("");
+type SearchFormValues = {
+    pdbId: string;
+    author: string;
+    assignedNtc: string;
+    entityName: string;
+    sourceOrganism: string;
+    nonStandardResidue: string;
+    experimentalMethod: string;
+    confalScoreMin: string;
+    confalScoreMax: string;
+    helixLengthMin: string;
+    helixLengthMax: string;
+    polymerType: string;
+    monomerFlag: string;
+}
 
-    function handleSearch() {
+export default function StructureQuery() {
+    const { register, handleSubmit, control } = useForm<SearchFormValues>();
+    const { setSearchParams } = useStructureSearch();
+    
+    function onSubmit(data: SearchFormValues) {
+        console.log(data);
         setSearchParams((p: URLSearchParams) => {
-            p.set("pdbId", pdbIdInput);
-            p.set("author", authorInput);
+            p.set("pdbId", data.pdbId);
+            p.set("author", data.author);
             return p;
         });
     }
@@ -28,20 +40,20 @@ export default function StructureQuery() {
             <CategoryWrapper title="Demographics" color="#378ADD">
                 <FormInput
                     label="Entry ID"
-                    value={pdbIdInput}
-                    setValue={setPdbIdInput}
+                    registration={register("pdbId")}
                 />
                 <FormInput
                     label="Author name"
-                    value={authorInput}
-                    setValue={setAuthorInput}
+                    registration={register("author")}
                 />
 
                 <OptionInput
                     label="Experimental method"
+                    name="experimentalMethod"
+                    control={control}
                     options={[
-                        {value: "any", label: "Any"},
-                        {value: "X-RAY DIFFRACTION", label: "X-ray"},
+                        { value: "any", label: "Any" },
+                        { value: "X-RAY DIFFRACTION", label: "X-ray" },
                         { value: "ELECTRON MICROSCOPY", label: "EM" },
                         { value: "SOLID-STATE NMR", label: "Solid NMR" },
                         { value: "SOLUTION NMR", label: "NMR" },
@@ -61,35 +73,37 @@ export default function StructureQuery() {
             <CategoryWrapper title="3D Features" color="#1D9E75">
                 <RangeInput
                     label="Confal score"
+                    registrationMin={register("confalScoreMin")}
+                    registrationMax={register("confalScoreMax")}
                 />
                 <RangeInput
                     label="Helix length"
+                    registrationMin={register("helixLengthMin")}
+                    registrationMax={register("helixLengthMax")}
                 />
                 <FormInput
                     label="Assigned ntc"
-                    value={assignedNtc}
-                    setValue={setAssignedNtc}
+                    registration={register("assignedNtc")}
                 />
             </CategoryWrapper>
 
             <CategoryWrapper title="Structure Components" color="#BA7517">
                 <FormInput
                     label="Entity name"
-                    value={entityName}
-                    setValue={setEntityName}
+                    registration={register("entityName")}
                 />
                 <FormInput
                     label="Source organism"
-                    value={sourceOrganism}
-                    setValue={setSourceOrganism}
+                    registration={register("sourceOrganism")}
                 />
                 <FormInput
                     label="Non-standard residue"
-                    value={nonStandardResidue}
-                    setValue={setNonStandardResidue}
+                    registration={register("nonStandardResidue")}
                 />
                 <OptionInput
                     label="Polymer type"
+                    name="polymerType"
+                    control={control}
                     options={[
                         { value: "any", label: "Any"},
                         { value: "Nucleic acid", label: "Nucleic acid"},
@@ -102,6 +116,8 @@ export default function StructureQuery() {
                 />
                 <OptionInput
                     label="Monomer standard flag"
+                    name="monomerFlag"
+                    control={control}
                     options={[
                         { value: "any", label: "Any"},
                         { value: "Standard", label: "Standard"},
@@ -112,7 +128,7 @@ export default function StructureQuery() {
             <div className="m-4">
                 <button
                     className="w-full py-2 border border-[#4A4A46] rounded-[5px] text-xs text-[#C4C4BE] uppercase"
-                    onClick={handleSearch}
+                    onClick={handleSubmit(onSubmit)}
                 >
                     Search
                 </button>
