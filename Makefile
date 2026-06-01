@@ -57,11 +57,21 @@ deploy:
 	$(COMPOSE) up -d --build
 
 DB_CONTAINER=na3db-db
-DB_USER=root
-DB_PASSWORD=rootpassword
+DB_USER=appuser
+DB_PASSWORD=apppassword
 DB_NAME=na3db
 
 .PHONY: db-init
 
 db-init:
-	docker exec -i $(DB_CONTAINER) mysql -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < init.sql
+	docker exec -i $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME) < init.sql
+
+.PHONY: db-seed
+
+db-seed:
+	docker exec -i $(DB_CONTAINER) psql -U $(DB_USER) -d $(DB_NAME) < seed.sql
+
+.PHONY: db-load
+
+db-load:
+	scripts/.venv/bin/python scripts/load_cif.py $(CIF_DIR)

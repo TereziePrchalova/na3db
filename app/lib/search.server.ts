@@ -1,5 +1,4 @@
-import { pool } from "~/lib/db.server";
-import type { RowDataPacket } from "mysql2";
+import { sql } from "~/lib/db.server";
 
 export type SearchResult = {
   pdbId: string;
@@ -7,31 +6,13 @@ export type SearchResult = {
   method: string | null;
 };
 
-type SearchRow = RowDataPacket & SearchResult;
-
 export async function searchEntries(params: {
   pdbId?: string;
   author?: string;
 }): Promise<SearchResult[]> {
-  const conditions: string[] = [];
-  const values: string[] = [];
-
-  if (params.pdbId) {
-    conditions.push("e.id LIKE ?");
-    values.push(`%${params.pdbId}%`);
-  }
-
-  if (params.author) {
-    conditions.push("ca.name LIKE ?");
-    values.push(`%${params.author}%`);
-  }
-
-  const where = conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : "";
-
-  const [rows] = await pool.query<SearchRow[]>(
-    `
+  const rows = await sql<SearchResult[]>`
     SELECT DISTINCT
-      e.id       AS pdbId,
+      e.id       AS "pdbId",
       s.title,
       ex.method
     FROM entry e
@@ -39,11 +20,11 @@ export async function searchEntries(params: {
     LEFT JOIN exptl           ex ON ex.entry_id = e.id
     LEFT JOIN citation        c  ON c.entry_id  = e.id
     LEFT JOIN citation_author ca ON ca.entry_id = e.id AND ca.citation_id = c.id
-    ${where}
+    WHERE TRUE
+    ${params.pdbId  ? sql`AND e.id    ILIKE ${'%' + params.pdbId  + '%'}` : sql``}
+    ${params.author ? sql`AND ca.name ILIKE ${'%' + params.author + '%'}` : sql``}
     ORDER BY e.id ASC
-    `,
-    values
-  );
+  `;
 
   return rows;
 }

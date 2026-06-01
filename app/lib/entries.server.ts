@@ -1,5 +1,4 @@
-import { pool } from "~/lib/db.server";
-import type { RowDataPacket } from "mysql2";
+import { sql } from "~/lib/db.server";
 
 export type Entry = {
   pdbId: string;
@@ -7,10 +6,8 @@ export type Entry = {
   method: string | null;
 };
 
-type EntryRow = RowDataPacket & Entry;
-
 export async function getEntries(): Promise<Entry[]> {
-  const [rows] = await pool.query<EntryRow[]>(`
+  const rows = await sql<Entry[]>`
     SELECT
       e.id AS pdbId,
       s.title,
@@ -21,7 +18,7 @@ export async function getEntries(): Promise<Entry[]> {
     LEFT JOIN exptl ex
       ON ex.entry_id = e.id
     ORDER BY e.id ASC
-  `);
+  `;
 
   return rows;
 }
