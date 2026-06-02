@@ -45,7 +45,7 @@ export async function searchEntries(params: {
     WHERE TRUE
     ${params.pdbId  ? sql`AND e.id    ILIKE ${'%' + params.pdbId  + '%'}` : sql``}
     ${params.author ? sql`AND ca.name ILIKE ${'%' + params.author + '%'}` : sql``}
-    ${expMethod     ? sql`AND ex.method = ${expMethod}` : sql``}
+    ${expMethod     ? sql`AND TRIM(BOTH '''' FROM ex.method) = ${expMethod}` : sql``}
     ${params.entityName ? sql`AND EXISTS (
       SELECT 1 FROM entity ent
       WHERE ent.entry_id = e.id
