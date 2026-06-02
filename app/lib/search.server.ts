@@ -23,10 +23,23 @@ export async function searchEntries(params: {
 }): Promise<SearchResult[]> {
   const expMethod = params.experimentalMethod && params.experimentalMethod !== "any"
     ? params.experimentalMethod : null;
-  const polymerType = params.polymerType && params.polymerType !== "any"
-    ? params.polymerType : null;
+  const POLYMER_TYPE_PATTERN: Record<string, string> = {
+    "Nucleic acid": "%nucleotide%",
+    "Oligosaccharide": "%saccharide%",
+    "Protein": "%polypeptide%",
+    "Protein/NA": "%polypeptide%nucleotide%",
+    "Protein/Oligosaccharide": "polypeptide%saccharide%",
+    "Other": "other",
+  };
+  const MONOMER_FLAG_VALUE: Record<string, string> = {
+    "Standard": "n",
+    "Non-Standard": "y",
+  };
+
+  const polymerTypePattern = params.polymerType && params.polymerType !== "any"
+    ? (POLYMER_TYPE_PATTERN[params.polymerType] ?? null) : null;
   const monomerFlag = params.monomerFlag && params.monomerFlag !== "any"
-    ? params.monomerFlag : null;
+    ? (MONOMER_FLAG_VALUE[params.monomerFlag] ?? null) : null;
   const confalMin = params.confalScoreMin ? parseFloat(params.confalScoreMin) : null;
   const confalMax = params.confalScoreMax ? parseFloat(params.confalScoreMax) : null;
   const helixMin = params.helixLengthMin ? parseInt(params.helixLengthMin) : null;
@@ -83,14 +96,14 @@ export async function searchEntries(params: {
       SELECT 1 FROM struct_conf sc
       WHERE sc.entry_id = e.id AND sc.pdbx_pdb_helix_length <= ${helixMax}
     )` : sql``}
-    ${polymerType ? sql`AND EXISTS (
+    ${polymerTypePattern ? sql`AND EXISTS (
       SELECT 1 FROM entity_poly ep
-      WHERE ep.entry_id = e.id AND ep.type = ${polymerType}
+      WHERE ep.entry_id = e.id AND TRIM(BOTH '''' FROM ep.type) ILIKE ${polymerTypePattern}
     )` : sql``}
     ${monomerFlag ? sql`AND EXISTS (
       SELECT 1 FROM entity_poly_seq eps2
       JOIN chem_comp cc2 ON cc2.id = eps2.mon_id
-      WHERE eps2.entry_id = e.id AND cc2.mon_nstd_flag = ${monomerFlag}
+      WHERE eps2.entry_id = e.id AND TRIM(BOTH '''' FROM cc2.mon_nstd_flag) = ${monomerFlag}
     )` : sql``}
     ORDER BY e.id ASC
   `;

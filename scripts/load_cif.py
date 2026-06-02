@@ -165,6 +165,15 @@ def load_entity_poly(cur, block, entry_id):
         """, (nil(r[0]), entry_id, nil(r[1]), nil(r[2])))
 
 
+def load_entity_poly_seq(cur, block, entry_id):
+    rows = find_loop(block, '_entity_poly_seq.', ['entity_id', 'num', 'mon_id', 'hetero'])
+    for r in rows:
+        cur.execute("""
+            INSERT INTO entity_poly_seq (entity_id, entry_id, num, mon_id, hetero)
+            VALUES (%s,%s,%s,%s,%s)
+        """, (nil(r[0]), entry_id, to_int(r[1]), nil(r[2]), nil(r[3])))
+
+
 def load_entity_src_gen(cur, block, entry_id):
     rows = find_loop(block, '_entity_src_gen.', [
         'entity_id', 'gene_src_common_name',
@@ -565,6 +574,7 @@ def load_block(cur, block, include_atoms=False):
     load_citation_author(cur, block, entry_id)
     load_entity(cur, block, entry_id)
     load_entity_poly(cur, block, entry_id)
+    load_entity_poly_seq(cur, block, entry_id)
     load_entity_src_gen(cur, block, entry_id)
     load_pdbx_entity_nonpoly(cur, block, entry_id)
     load_struct_asym(cur, block, entry_id)
