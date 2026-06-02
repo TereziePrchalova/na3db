@@ -27,10 +27,21 @@ export default function StructureQuery() {
     const { setSearchParams } = useStructureSearch();
     
     function onSubmit(data: SearchFormValues) {
-        console.log(data);
-        setSearchParams((p: URLSearchParams) => {
-            p.set("pdbId", data.pdbId);
-            p.set("author", data.author);
+        setSearchParams(() => {
+            const p = new URLSearchParams();
+            if (data.pdbId)              p.set("pdbId",              data.pdbId);
+            if (data.author)             p.set("author",             data.author);
+            if (data.experimentalMethod) p.set("experimentalMethod", data.experimentalMethod);
+            if (data.entityName)         p.set("entityName",         data.entityName);
+            if (data.sourceOrganism)     p.set("sourceOrganism",     data.sourceOrganism);
+            if (data.nonStandardResidue) p.set("nonStandardResidue", data.nonStandardResidue);
+            if (data.assignedNtc)        p.set("assignedNtc",        data.assignedNtc);
+            if (data.confalScoreMin)     p.set("confalScoreMin",     data.confalScoreMin);
+            if (data.confalScoreMax)     p.set("confalScoreMax",     data.confalScoreMax);
+            if (data.helixLengthMin)     p.set("helixLengthMin",     data.helixLengthMin);
+            if (data.helixLengthMax)     p.set("helixLengthMax",     data.helixLengthMax);
+            if (data.polymerType)        p.set("polymerType",        data.polymerType);
+            if (data.monomerFlag)        p.set("monomerFlag",        data.monomerFlag);
             return p;
         });
     }

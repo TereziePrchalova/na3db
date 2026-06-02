@@ -1,7 +1,7 @@
-import type { Entry } from "~/lib/entries.server";
+import type { SearchResult } from "~/lib/search.server";
 
 type ResultsProps = {
-  results: Entry[];
+  results: SearchResult[];
 };
 
 export default function Results({ results }: ResultsProps) {
