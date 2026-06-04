@@ -5,7 +5,8 @@ export async function loader({ request }: { request: Request }) {
   const p = url.searchParams;
 
   try {
-    const results = await searchEntries({
+    const response = await searchEntries({
+      page:                p.get("page")                ?? undefined,
       pdbId:               p.get("pdbId")               ?? undefined,
       author:              p.get("author")              ?? undefined,
       experimentalMethod:  p.get("experimentalMethod")  ?? undefined,
@@ -20,7 +21,7 @@ export async function loader({ request }: { request: Request }) {
       polymerType:         p.get("polymerType")         ?? undefined,
       monomerFlag:         p.get("monomerFlag")         ?? undefined,
     });
-    return Response.json(results);
+    return Response.json(response);
   } catch (err) {
     console.error("Search failed:", err);
     return Response.json({ error: "Search failed" }, { status: 500 });
