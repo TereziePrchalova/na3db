@@ -27,8 +27,14 @@ export default function OptionInput<T extends FieldValues>({ label, options, nam
                             <button
                                 key={opt.value}
                                 type="button"
-                                className={`${field.value === opt.value ? "bg-[#085041] text-[#9FE1CB]" : "border-[#4A4A46]"} rounded-full border px-3 py-1 text-xs bg-transparent mr-1 mb-1 transition-colors`}
-                                onClick={() => field.onChange(opt.value)}
+                                className={`${((field.value ?? []) as string[]).includes(opt.value) ? "bg-[#085041] text-[#9FE1CB] border-[#085041]" : "bg-transparent border-[#4A4A46]"} rounded-full border px-3 py-1 text-xs mr-1 mb-1 transition-colors`}
+                                onClick={() => {
+                                    const current: string[] = field.value ?? [];
+                                    const next = current.includes(opt.value)
+                                        ? current.filter(v => v !== opt.value)
+                                        : [...current, opt.value]
+                                    field.onChange(next)
+                                }}
                             >
                                 {opt.label}
                             </button>

@@ -32,8 +32,8 @@ export async function searchEntries(params: {
   const page = Math.max(1, parseInt(params.page ?? "1") || 1);
   const offset = (page - 1) * PAGE_SIZE;
 
-  const expMethod = params.experimentalMethod && params.experimentalMethod !== "any"
-    ? params.experimentalMethod : null;
+  const expMethods = params.experimentalMethod ? params.experimentalMethod.split(",").filter(v => v !== "any") : [];
+
   const POLYMER_TYPE_PATTERN: Record<string, string> = {
     "Nucleic acid": "%nucleotide%",
     "Oligosaccharide": "%saccharide%",
@@ -47,10 +47,12 @@ export async function searchEntries(params: {
     "Non-Standard": "y",
   };
 
-  const polymerTypePattern = params.polymerType && params.polymerType !== "any"
-    ? (POLYMER_TYPE_PATTERN[params.polymerType] ?? null) : null;
-  const monomerFlag = params.monomerFlag && params.monomerFlag !== "any"
-    ? (MONOMER_FLAG_VALUE[params.monomerFlag] ?? null) : null;
+  const polymerTypePatterns = params.polymerType
+    ? params.polymerType.split(",").filter(v => v !== "any").map(v => POLYMER_TYPE_PATTERN[v]).filter(Boolean) as string[]
+    : [];
+  const monomerFlags = params.monomerFlag
+    ? params.monomerFlag.split(",").filter(v => v !== "any").map(v => MONOMER_FLAG_VALUE[v]).filter(Boolean) as string[]
+    : [];
   const confalMin = params.confalScoreMin ? parseFloat(params.confalScoreMin) : null;
   const confalMax = params.confalScoreMax ? parseFloat(params.confalScoreMax) : null;
   const helixMin = params.helixLengthMin ? parseInt(params.helixLengthMin) : null;
@@ -71,7 +73,7 @@ export async function searchEntries(params: {
       WHERE TRUE
       ${params.pdbId  ? sql`AND e.id    ILIKE ${'%' + params.pdbId  + '%'}` : sql``}
       ${params.author ? sql`AND ca.name ILIKE ${'%' + params.author + '%'}` : sql``}
-      ${expMethod     ? sql`AND ex.method = ${expMethod}` : sql``}
+      ${expMethods.length ? sql`AND ex.method = ANY(${sql.array(expMethods)})` : sql``}
       ${params.entityName ? sql`AND EXISTS (
         SELECT 1 FROM entity ent
         WHERE ent.entry_id = e.id
@@ -109,14 +111,14 @@ export async function searchEntries(params: {
         SELECT 1 FROM struct_conf sc
         WHERE sc.entry_id = e.id AND sc.pdbx_pdb_helix_length <= ${helixMax}
       )` : sql``}
-      ${polymerTypePattern ? sql`AND EXISTS (
+      ${polymerTypePatterns.length ? sql`AND EXISTS (
         SELECT 1 FROM entity_poly ep
-        WHERE ep.entry_id = e.id AND ep.type ILIKE ${polymerTypePattern}
+        WHERE ep.entry_id = e.id AND ep.type ILIKE ANY(${sql.array(polymerTypePatterns)})
       )` : sql``}
-      ${monomerFlag ? sql`AND EXISTS (
+      ${monomerFlags.length ? sql`AND EXISTS (
         SELECT 1 FROM entity_poly_seq eps2
         JOIN chem_comp cc2 ON cc2.id = eps2.mon_id
-        WHERE eps2.entry_id = e.id AND cc2.mon_nstd_flag = ${monomerFlag}
+        WHERE eps2.entry_id = e.id AND cc2.mon_nstd_flag = ANY(${sql.array(monomerFlags)})
       )` : sql``}
     )
     SELECT *, (SELECT COUNT(*) FROM base) AS total

@@ -53,7 +53,7 @@ export default function Results({ results, total, page, pageSize, onPageChange }
                 ))}
             </div>
             {totalPages > 1 && (
-                <div className="h-12 border-t border-t-[#2E2E2B] flex items-center justify-between px-6 shrink-0">
+                <div className="h-12 border-t border-t-[#2E2E2B] flex items-center justify-center px-6 shrink-0">
                     <button
                         onClick={() => onPageChange(page - 1)}
                         disabled={page <= 1}
@@ -61,7 +61,7 @@ export default function Results({ results, total, page, pageSize, onPageChange }
                     >
                         ←
                     </button>
-                    <span className="text-xs text-[#85858A]">{page} / {totalPages}</span>
+                    <span className="text-xs text-[#85858A] mx-6">{page} / {totalPages}</span>
                     <button
                         onClick={() => onPageChange(page + 1)}
                         disabled={page >= totalPages}

@@ -13,13 +13,13 @@ type SearchFormValues = {
     entityName: string;
     sourceOrganism: string;
     nonStandardResidue: string;
-    experimentalMethod: string;
+    experimentalMethod: string[];
     confalScoreMin: string;
     confalScoreMax: string;
     helixLengthMin: string;
     helixLengthMax: string;
-    polymerType: string;
-    monomerFlag: string;
+    polymerType: string[];
+    monomerFlag: string[];
 }
 
 export default function StructureQuery() {
@@ -31,7 +31,7 @@ export default function StructureQuery() {
             const p = new URLSearchParams();
             if (data.pdbId)              p.set("pdbId",              data.pdbId);
             if (data.author)             p.set("author",             data.author);
-            if (data.experimentalMethod) p.set("experimentalMethod", data.experimentalMethod);
+            if (data.experimentalMethod?.length) p.set("experimentalMethod", data.experimentalMethod.join(","));
             if (data.entityName)         p.set("entityName",         data.entityName);
             if (data.sourceOrganism)     p.set("sourceOrganism",     data.sourceOrganism);
             if (data.nonStandardResidue) p.set("nonStandardResidue", data.nonStandardResidue);
@@ -40,8 +40,8 @@ export default function StructureQuery() {
             if (data.confalScoreMax)     p.set("confalScoreMax",     data.confalScoreMax);
             if (data.helixLengthMin)     p.set("helixLengthMin",     data.helixLengthMin);
             if (data.helixLengthMax)     p.set("helixLengthMax",     data.helixLengthMax);
-            if (data.polymerType)        p.set("polymerType",        data.polymerType);
-            if (data.monomerFlag)        p.set("monomerFlag",        data.monomerFlag);
+            if (data.polymerType?.length)        p.set("polymerType",        data.polymerType.join(","));
+            if (data.monomerFlag?.length)        p.set("monomerFlag",        data.monomerFlag.join(","));
             return p;
         });
     }
