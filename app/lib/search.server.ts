@@ -73,7 +73,7 @@ export async function searchEntries(params: {
       WHERE TRUE
       ${params.pdbId  ? sql`AND e.id    ILIKE ${'%' + params.pdbId  + '%'}` : sql``}
       ${params.author ? sql`AND ca.name ILIKE ${'%' + params.author + '%'}` : sql``}
-      ${expMethods.length ? sql`AND ex.method = ANY(${sql.array(expMethods)})` : sql``}
+      ${expMethods.length ? sql`AND ex.method = ANY(${sql.array(expMethods)}::text[])` : sql``}
       ${params.entityName ? sql`AND EXISTS (
         SELECT 1 FROM entity ent
         WHERE ent.entry_id = e.id
@@ -113,12 +113,12 @@ export async function searchEntries(params: {
       )` : sql``}
       ${polymerTypePatterns.length ? sql`AND EXISTS (
         SELECT 1 FROM entity_poly ep
-        WHERE ep.entry_id = e.id AND ep.type ILIKE ANY(${sql.array(polymerTypePatterns)})
+        WHERE ep.entry_id = e.id AND ep.type ILIKE ANY(${sql.array(polymerTypePatterns)}::text[])
       )` : sql``}
       ${monomerFlags.length ? sql`AND EXISTS (
         SELECT 1 FROM entity_poly_seq eps2
         JOIN chem_comp cc2 ON cc2.id = eps2.mon_id
-        WHERE eps2.entry_id = e.id AND cc2.mon_nstd_flag = ANY(${sql.array(monomerFlags)})
+        WHERE eps2.entry_id = e.id AND cc2.mon_nstd_flag = ANY(${sql.array(monomerFlags)}::text[])
       )` : sql``}
     )
     SELECT *, (SELECT COUNT(*) FROM base) AS total
