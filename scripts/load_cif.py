@@ -29,7 +29,7 @@ import psycopg2
 def nil(v):
     if v is None or v in ('.', '?', ''):
         return None
-    v = str(v).strip()
+    v = gemmi.cif.as_string(str(v)).strip()
     return None if v in ('.', '?', '') else v
 
 
@@ -597,6 +597,29 @@ def load_block(cur, block, include_atoms=False):
         load_atom_site(cur, block, entry_id)
 
 
+def strip_cif_quotes(conn):
+    """Strip CIF single/double quotes stored literally in string columns (idempotent)."""
+    tables_cols = [
+        ('struct',              ['title']),
+        ('exptl',               ['method']),
+        ('citation',            ['title', 'journal_abbrev']),
+        ('citation_author',     ['name']),
+        ('entity',              ['type', 'pdbx_description']),
+        ('entity_poly',         ['type']),
+        ('entity_src_gen',      ['gene_src_common_name', 'pdbx_gene_src_scientific_name']),
+        ('chem_comp',           ['type', 'mon_nstd_flag', 'name', 'pdbx_synonyms', 'formula']),
+        ('symmetry',            ['space_group_name_H_M']),
+        ('ndb_struct_ntc_overall',      ['ntc_version', 'cana_version']),
+        ('ndb_struct_ntc_step_summary', ['assigned_cana', 'assigned_ntc', 'closest_cana', 'closest_ntc', 'closest_step_golden']),
+    ]
+    with conn:
+        cur = conn.cursor()
+        for table, cols in tables_cols:
+            set_clause  = ', '.join(f"{c} = regexp_replace({c}, $re$^['\"]|['\"]$$re$, '', 'g')" for c in cols)
+            where_clause = ' OR '.join(f"{c} ~ $re$^['\"]$re$" for c in cols)
+            cur.execute(f"UPDATE {table} SET {set_clause} WHERE {where_clause}")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Load mmCIF files into na3db')
     parser.add_argument('cif_dir', help='Folder containing .cif files')
@@ -635,6 +658,10 @@ def main():
             conn.rollback()
             errors.append((name, str(e)))
             print(f'ERROR: {e}')
+
+    print('Stripping CIF quotes from database...', end=' ', flush=True)
+    strip_cif_quotes(conn)
+    print('OK')
 
     conn.close()
 
