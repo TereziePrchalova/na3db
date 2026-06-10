@@ -1,87 +1,86 @@
-# Welcome to React Router!
+# na3db
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A web application for querying and browsing nucleic acid structures from the NDB/PDB database.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Prerequisites
 
-## Features
+- [Docker](https://www.docker.com/) and Docker Compose
+- [Node.js](https://nodejs.org/) (v18+) and npm
+- Python 3 with `pip` (for loading CIF data)
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Setup
 
-## Getting Started
+### 1. Build and start the database
 
-### Installation
+```bash
+make build
+make up
+```
 
-Install the dependencies:
+This builds the containers and starts a PostgreSQL instance on port `5432`. On first run it applies `init.sql` to create the schema.
+
+### 2. Load CIF data
+
+Install the Python dependencies and load your CIF files:
+
+```bash
+cd scripts
+python -m venv .venv
+.venv/bin/pip install gemmi psycopg2-binary
+cd ..
+
+make db-load CIF_DIR=/path/to/cif/files
+```
+
+Add `--atoms` if you also want to load atom-level data (slow):
+
+```bash
+scripts/.venv/bin/python scripts/load_cif.py /path/to/cif/files --atoms
+```
+
+### 3. Configure environment
+
+Create a `.env` file in the project root:
+
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=your_db_user
+DB_PASSWORD=your_db_password
+DB_NAME=na3db
+```
+
+### 4. Install dependencies and run
 
 ```bash
 npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
 npm run dev
 ```
 
-Your application will be available at `http://localhost:5173`.
+The app will be available at `http://localhost:5173`.
 
-## Building for Production
+## Production (Docker)
 
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
+To run the full stack (app + database) in Docker:
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+make build
+make up
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
+The app is served at `http://localhost:3000`.
 
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
+To stop:
 
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
+```bash
+make down
 ```
 
-## Styling
+## Other useful commands
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+| Command | Description |
+|---|---|
+| `make logs` | Stream container logs |
+| `make restart` | Restart all containers |
+| `make reset-db` | Wipe and recreate the database (destructive) |
+| `make clean` | Remove all containers, volumes, and images |
