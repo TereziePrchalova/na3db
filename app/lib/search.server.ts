@@ -6,6 +6,8 @@ export type SearchResult = {
   title: string | null;
   citationTitle: string | null;
   method: string | null;
+  resolution: number | null;
+  depositionDate: string | null;
 };
 
 export type SearchResponse = {
@@ -64,10 +66,14 @@ export async function searchEntries(params: {
         e.id       AS "pdbId",
         s.title,
         c.title    AS "citationTitle",
-        ex.method
+        ex.method,
+        rf.d_resolution_high AS resolution,
+        ds.recvd_initial_deposition_date AS "depositionDate"
       FROM entry e
-      LEFT JOIN struct          s  ON s.entry_id  = e.id
-      LEFT JOIN exptl           ex ON ex.entry_id = e.id
+      LEFT JOIN struct                s  ON s.entry_id  = e.id
+      LEFT JOIN exptl                 ex ON ex.entry_id = e.id
+      LEFT JOIN reflns                rf ON rf.entry_id = e.id
+      LEFT JOIN pdbx_database_status  ds ON ds.entry_id = e.id
       LEFT JOIN citation        c  ON c.entry_id  = e.id AND c.id = 'primary'
       LEFT JOIN citation_author ca ON ca.entry_id = e.id AND ca.citation_id = c.id
       WHERE TRUE
