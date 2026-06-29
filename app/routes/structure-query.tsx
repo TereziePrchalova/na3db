@@ -87,11 +87,13 @@ export default function StructureQuery() {
                     registrationMin={register("confalScoreMin")}
                     registrationMax={register("confalScoreMax")}
                 />
-                <RangeInput
-                    label="Helix length"
-                    registrationMin={register("helixLengthMin")}
-                    registrationMax={register("helixLengthMax")}
-                />
+                <div className="hidden">
+                    <RangeInput
+                        label="Helix length"
+                        registrationMin={register("helixLengthMin")}
+                        registrationMax={register("helixLengthMax")}
+                    />
+                </div>
                 <FormInput
                     label="Assigned ntc"
                     registration={register("assignedNtc")}
