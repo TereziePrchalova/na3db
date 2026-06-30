@@ -1,7 +1,9 @@
 import SidebarItem from "./SidebarItem"
-import { Link } from "react-router"
+import { Link, useLocation } from "react-router"
 
 export default function Sidebar() {
+    const location = useLocation();
+
     return (
         <div className="w-15 shrink-0 h-screen bg-bg-secondary flex flex-col justify-between border-r border-r-[#3D3D39]">
             <div>
@@ -13,7 +15,7 @@ export default function Sidebar() {
                 </Link>
                 <SidebarItem src="/search.svg" alt="Search" to="/"/>
                 <SidebarItem src="/Q.png" alt="Questions" width="w-5" to="/questions"/>
-                <SidebarItem src="/report.svg" alt="Report" to="/report"/>
+                <SidebarItem src="/report.svg" alt="Report" to={{ pathname: "/report", search: location.search }}/>
             </div>
 
             <div className="vertical-text font-extrabold tracking-widest text-3xl my-auto mb-4">

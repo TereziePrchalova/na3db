@@ -1,9 +1,9 @@
-import { NavLink } from "react-router";
+import { NavLink, type To } from "react-router";
 
 type SidebarItemProps = {
     src: string;
     alt: string;
-    to: string;
+    to: To;
     width?: string;
 }
 
