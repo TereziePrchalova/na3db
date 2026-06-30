@@ -47,7 +47,7 @@ export default function StructureQuery() {
     }
 
     return (
-        <SectionWrapper title="Structure query">
+        <SectionWrapper title="Structure query" footer={{ label: "Search", onClick: handleSubmit(onSubmit) }}>
             <CategoryWrapper title="Demographics" color="#378ADD">
                 <FormInput
                     label="Entry ID"
@@ -132,20 +132,11 @@ export default function StructureQuery() {
                     name="monomerFlag"
                     control={control}
                     options={[
-                        { value: "any", label: "Any"},
                         { value: "Standard", label: "Standard"},
                         { value: "Non-Standard", label: "Non-Standard" },
                     ]}
                 />
             </CategoryWrapper>
-            <div className="m-4">
-                <button
-                    className="w-full py-2 border border-[#4A4A46] rounded-[5px] text-xs text-[#C4C4BE] uppercase"
-                    onClick={handleSubmit(onSubmit)}
-                >
-                    Search
-                </button>
-            </div>
         </SectionWrapper>
     )
 }
