@@ -17,11 +17,13 @@ export default function RangeInput({ label, registrationMin, registrationMax }: 
             <div className="flex justify-between">
                 <FormInput
                     placeholder="min"
+                    type="number"
                     registration={registrationMin}
                 />
                 <div className="h-0.5 bg-[#C4C4BE] w-2 shrink-0 rounded-full my-auto mx-4 mb-8" />   
                 <FormInput
                     placeholder="max"
+                    type="number"
                     registration={registrationMax}
                 />
             </div>
