@@ -1,7 +1,7 @@
 import { useSearchParams } from "react-router";
 import { useState, useEffect } from "react";
 import type { SearchResult } from "~/lib/search.server";
-import { PAGE_SIZE } from "~/lib/constants";
+import { PAGE_SIZE, FILTER_KEYS } from "~/lib/constants";
 
 export function useStructureSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -10,20 +10,11 @@ export function useStructureSearch() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const pdbId              = searchParams.get("pdbId")              ?? "";
-  const author             = searchParams.get("author")             ?? "";
-  const experimentalMethod = searchParams.get("experimentalMethod") ?? "";
-  const entityName         = searchParams.get("entityName")         ?? "";
-  const sourceOrganism     = searchParams.get("sourceOrganism")     ?? "";
-  const nonStandardResidue = searchParams.get("nonStandardResidue") ?? "";
-  const assignedNtc        = searchParams.get("assignedNtc")        ?? "";
-  const confalScoreMin     = searchParams.get("confalScoreMin")     ?? "";
-  const confalScoreMax     = searchParams.get("confalScoreMax")     ?? "";
-  const helixLengthMin     = searchParams.get("helixLengthMin")     ?? "";
-  const helixLengthMax     = searchParams.get("helixLengthMax")     ?? "";
-  const polymerType        = searchParams.get("polymerType")        ?? "";
-  const monomerFlag        = searchParams.get("monomerFlag")        ?? "";
-  const page               = parseInt(searchParams.get("page")      ?? "1") || 1;
+  const filters = Object.fromEntries(
+    FILTER_KEYS.map((key) => [key, searchParams.get(key) ?? ""])
+  ) as Record<(typeof FILTER_KEYS)[number], string>;
+
+  const page = parseInt(searchParams.get("page") ?? "1") || 1;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -32,19 +23,11 @@ export function useStructureSearch() {
     setError(null);
 
     const params = new URLSearchParams();
-    if (pdbId)              params.set("pdbId",              pdbId);
-    if (author)             params.set("author",             author);
-    if (experimentalMethod) params.set("experimentalMethod", experimentalMethod);
-    if (entityName)         params.set("entityName",         entityName);
-    if (sourceOrganism)     params.set("sourceOrganism",     sourceOrganism);
-    if (nonStandardResidue) params.set("nonStandardResidue", nonStandardResidue);
-    if (assignedNtc)        params.set("assignedNtc",        assignedNtc);
-    if (confalScoreMin)     params.set("confalScoreMin",     confalScoreMin);
-    if (confalScoreMax)     params.set("confalScoreMax",     confalScoreMax);
-    if (helixLengthMin)     params.set("helixLengthMin",     helixLengthMin);
-    if (helixLengthMax)     params.set("helixLengthMax",     helixLengthMax);
-    if (polymerType)        params.set("polymerType",        polymerType);
-    if (monomerFlag)        params.set("monomerFlag",        monomerFlag);
+    
+    FILTER_KEYS.forEach((key) => {
+    if (filters[key]) params.set(key, filters[key]);
+    });
+
     params.set("page", String(page));
 
     fetch(`/api/search?${params}`, { signal: controller.signal })
@@ -59,11 +42,7 @@ export function useStructureSearch() {
       .finally(() => setLoading(false));
 
     return () => controller.abort();
-  }, [
-    pdbId, author, experimentalMethod, entityName, sourceOrganism,
-    nonStandardResidue, assignedNtc, confalScoreMin, confalScoreMax,
-    helixLengthMin, helixLengthMax, polymerType, monomerFlag, page,
-  ]);
+  }, [...Object.values(filters), page]);
 
   function setPage(newPage: number) {
     setSearchParams(prev => {
@@ -74,10 +53,6 @@ export function useStructureSearch() {
   }
 
   return {
-    pdbId, author, experimentalMethod, entityName, sourceOrganism,
-    nonStandardResidue, assignedNtc, confalScoreMin, confalScoreMax,
-    helixLengthMin, helixLengthMax, polymerType, monomerFlag,
-    results, total, page, pageSize: PAGE_SIZE, loading, error,
-    setSearchParams, setPage,
+    ...filters, results, total, page, pageSize: PAGE_SIZE, loading, error, setSearchParams, setPage,
   };
 }

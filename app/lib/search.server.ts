@@ -1,5 +1,6 @@
 import { sql } from "~/lib/db.server";
 import { PAGE_SIZE } from "~/lib/constants";
+import { FILTER_KEYS } from "~/lib/constants";
 
 export type SearchResult = {
   pdbId: string;
@@ -15,21 +16,7 @@ export type SearchResponse = {
   total: number;
 };
 
-export type SearchFilterParams = {
-  pdbId?: string;
-  author?: string;
-  experimentalMethod?: string;
-  entityName?: string;
-  sourceOrganism?: string;
-  nonStandardResidue?: string;
-  assignedNtc?: string;
-  confalScoreMin?: string;
-  confalScoreMax?: string;
-  helixLengthMin?: string;
-  helixLengthMax?: string;
-  polymerType?: string;
-  monomerFlag?: string;
-};
+export type SearchFilterParams = Partial<Record<(typeof FILTER_KEYS)[number], string>>;
 
 const POLYMER_TYPE_PATTERN: Record<string, string> = {
   "Nucleic acid": "%nucleotide%",
@@ -58,8 +45,6 @@ export function buildSearchWhere(params: SearchFilterParams) {
   const filterNonStandard = monomerFlagValues.includes("n");
   const confalMin = params.confalScoreMin ? parseFloat(params.confalScoreMin) : null;
   const confalMax = params.confalScoreMax ? parseFloat(params.confalScoreMax) : null;
-  const helixMin = params.helixLengthMin ? parseInt(params.helixLengthMin) : null;
-  const helixMax = params.helixLengthMax ? parseInt(params.helixLengthMax) : null;
 
   return sql`
     TRUE
@@ -100,14 +85,6 @@ export function buildSearchWhere(params: SearchFilterParams) {
     ${confalMax !== null && !isNaN(confalMax) ? sql`AND EXISTS (
       SELECT 1 FROM ndb_struct_ntc_overall ntco
       WHERE ntco.entry_id = e.id AND ntco.confal_score <= ${confalMax}
-    )` : sql``}
-    ${helixMin !== null && !isNaN(helixMin) ? sql`AND EXISTS (
-      SELECT 1 FROM struct_conf sc
-      WHERE sc.entry_id = e.id AND sc.pdbx_pdb_helix_length >= ${helixMin}
-    )` : sql``}
-    ${helixMax !== null && !isNaN(helixMax) ? sql`AND EXISTS (
-      SELECT 1 FROM struct_conf sc
-      WHERE sc.entry_id = e.id AND sc.pdbx_pdb_helix_length <= ${helixMax}
     )` : sql``}
     ${polymerTypePatterns.length ? sql`AND EXISTS (
       SELECT 1 FROM entity_poly ep

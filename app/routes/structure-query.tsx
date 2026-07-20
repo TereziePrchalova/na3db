@@ -5,6 +5,7 @@ import OptionInput from "~/components/OptionInput";
 import RangeInput from "~/components/RangeInput";
 import SectionWrapper from "~/components/SectionWrapper";
 import { useStructureSearch } from "~/hooks/useStructureSearch";
+import { FILTER_KEYS } from "~/lib/constants";
 
 type SearchFormValues = {
     pdbId: string;
@@ -16,8 +17,6 @@ type SearchFormValues = {
     experimentalMethod: string[];
     confalScoreMin: string;
     confalScoreMax: string;
-    helixLengthMin: string;
-    helixLengthMax: string;
     polymerType: string[];
     monomerFlag: string[];
 }
@@ -29,21 +28,13 @@ export default function StructureQuery() {
     function onSubmit(data: SearchFormValues) {
         setSearchParams(() => {
             const p = new URLSearchParams();
-            if (data.pdbId)              p.set("pdbId",              data.pdbId);
-            if (data.author)             p.set("author",             data.author);
-            if (data.experimentalMethod?.length) p.set("experimentalMethod", data.experimentalMethod.join(","));
-            if (data.entityName)         p.set("entityName",         data.entityName);
-            if (data.sourceOrganism)     p.set("sourceOrganism",     data.sourceOrganism);
-            if (data.nonStandardResidue) p.set("nonStandardResidue", data.nonStandardResidue);
-            if (data.assignedNtc)        p.set("assignedNtc",        data.assignedNtc);
-            if (data.confalScoreMin)     p.set("confalScoreMin",     data.confalScoreMin);
-            if (data.confalScoreMax)     p.set("confalScoreMax",     data.confalScoreMax);
-            if (data.helixLengthMin)     p.set("helixLengthMin",     data.helixLengthMin);
-            if (data.helixLengthMax)     p.set("helixLengthMax",     data.helixLengthMax);
-            if (data.polymerType?.length)        p.set("polymerType",        data.polymerType.join(","));
-            if (data.monomerFlag?.length)        p.set("monomerFlag",        data.monomerFlag.join(","));
+            for (const key of FILTER_KEYS) {
+                const value = data[key];
+                const str = Array.isArray(value) ? value.join(",") : value;
+                if (str) p.set(key, str);
+            }
             return p;
-        });
+        })
     }
 
     return (
@@ -87,13 +78,6 @@ export default function StructureQuery() {
                     registrationMin={register("confalScoreMin")}
                     registrationMax={register("confalScoreMax")}
                 />
-                <div className="hidden">
-                    <RangeInput
-                        label="Helix length"
-                        registrationMin={register("helixLengthMin")}
-                        registrationMax={register("helixLengthMax")}
-                    />
-                </div>
                 <FormInput
                     label="Assigned ntc"
                     registration={register("assignedNtc")}
