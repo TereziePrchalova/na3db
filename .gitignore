@@ -5,3 +5,16 @@
 # React Router
 /.react-router/
 /build/
+
+# Vendored from node_modules/moorhen/public via `npm run build`/`dev`
+/public/baby-gru/
+/public/mathjax/
+/public/CootWorker.js
+/public/CootWorker.ts
+/public/coot_env_web.js
+/public/manifest.json
+/public/robots.txt
+/public/moorhen.js
+/public/moorhen.wasm
+/public/moorhen64.js
+/public/moorhen64.wasm

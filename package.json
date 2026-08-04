@@ -3,19 +3,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "react-router build",
-    "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
+    "build": "cp -r node_modules/moorhen/public/. public/ && rm -f public/CootWorker.ts && node scripts/scope-moorhen-theme.mjs && react-router build",
+    "dev": "cp -r node_modules/moorhen/public/. public/ && rm -f public/CootWorker.ts && node scripts/scope-moorhen-theme.mjs && react-router dev",
+    "start": "node server.js",
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
+    "@react-router/express": "7.14.0",
     "@react-router/node": "7.14.0",
-    "@react-router/serve": "7.14.0",
+    "compression": "^1.8.0",
+    "express": "^4.22.1",
     "isbot": "^5.1.36",
+    "moorhen": "^0.22.7",
     "postgres": "^3.4.9",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-hook-form": "^7.77.0",
+    "react-redux": "^9.3.0",
     "react-router": "7.14.0"
   },
   "devDependencies": {
@@ -24,6 +28,7 @@
     "@types/node": "^22",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "postcss-prefix-selector": "^2.1.1",
     "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
     "vite": "^8.0.3"
