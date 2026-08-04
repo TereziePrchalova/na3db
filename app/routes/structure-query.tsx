@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
+import { useSearchParams } from "react-router";
 import CategoryWrapper from "~/components/CategoryWrapper";
 import FormInput from "~/components/FormInput";
 import OptionInput from "~/components/OptionInput";
 import RangeInput from "~/components/RangeInput";
 import SectionWrapper from "~/components/SectionWrapper";
-import { useStructureSearch } from "~/hooks/useStructureSearch";
 import { FILTER_KEYS } from "~/lib/constants";
 
 type SearchFormValues = {
@@ -23,7 +23,7 @@ type SearchFormValues = {
 
 export default function StructureQuery() {
     const { register, handleSubmit, control } = useForm<SearchFormValues>();
-    const { setSearchParams } = useStructureSearch();
+    const [, setSearchParams] = useSearchParams();
     
     function onSubmit(data: SearchFormValues) {
         setSearchParams(() => {
