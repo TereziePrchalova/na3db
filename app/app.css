@@ -14,7 +14,13 @@
 
 html,
 body {
-  @apply bg-bg-primary text-text-primary;
+  @apply bg-bg-primary;
+  height: 100%;
+  overflow: hidden;
+}
+
+#app-root {
+  @apply text-text-primary min-h-screen;
 
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
