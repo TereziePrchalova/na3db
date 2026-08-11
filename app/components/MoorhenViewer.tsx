@@ -139,7 +139,6 @@ export default function MoorhenViewer({ pdbId }: { pdbId: string }) {
         <Provider store={MoorhenReduxStore}>
             <div
                 ref={wrapperRef}
-                className="moorhen-scope"
                 style={{ width: "100%", height: "100%", transform: "translateZ(0)" }}
             >
                 <MoorhenContainer
