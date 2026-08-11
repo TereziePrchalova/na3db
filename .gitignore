@@ -6,6 +6,9 @@
 /.react-router/
 /build/
 
+# Built by `vite build --config vite.moorhen-embed.config.ts` via `npm run build`/`dev`
+/public/moorhen-embed/
+
 # Vendored from node_modules/moorhen/public via `npm run build`/`dev`
 /public/baby-gru/
 /public/mathjax/

@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "cp -r node_modules/moorhen/public/. public/ && rm -f public/CootWorker.ts && node scripts/scope-moorhen-theme.mjs && react-router build",
-    "dev": "cp -r node_modules/moorhen/public/. public/ && rm -f public/CootWorker.ts && node scripts/scope-moorhen-theme.mjs && react-router dev",
+    "build": "cp -r node_modules/moorhen/public/. public/ && rm -f public/CootWorker.ts && vite build --config vite.moorhen-embed.config.ts && react-router build",
+    "dev": "cp -r node_modules/moorhen/public/. public/ && rm -f public/CootWorker.ts && vite build --config vite.moorhen-embed.config.ts && react-router dev",
     "start": "node server.js",
     "typecheck": "react-router typegen && tsc"
   },

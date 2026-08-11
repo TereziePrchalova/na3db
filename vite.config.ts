@@ -11,7 +11,12 @@ export default defineConfig({
       "Cross-Origin-Embedder-Policy": "require-corp",
     },
     watch: {
-      ignored: ["**/public/baby-gru/**", "**/public/**.wasm", "**/public/**.data"],
+      ignored: [
+        "**/public/baby-gru/**",
+        "**/public/moorhen-embed/**",
+        "**/public/**.wasm",
+        "**/public/**.data",
+      ],
     },
   },
   resolve: { tsconfigPaths: true },

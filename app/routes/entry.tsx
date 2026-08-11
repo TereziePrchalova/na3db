@@ -1,11 +1,12 @@
 import { useParams } from "react-router";
-import MoorhenViewer from "~/components/MoorhenViewer";
 
 export default function Entry() {
     const { pdbId } = useParams();
     return (
-        <div className="w-full h-full">
-            <MoorhenViewer pdbId={pdbId!} />
-        </div>
+        <iframe
+            src={`/moorhen-embed/index.html?pdbId=${encodeURIComponent(pdbId!)}`}
+            title="Moorhen 3D structure viewer"
+            className="w-full h-full border-0"
+        />
     )
 }
