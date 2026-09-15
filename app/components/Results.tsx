@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { NavLink, useLocation } from "react-router";
 import type { SearchResult } from "~/lib/search.server";
 
 type ResultsProps = {
@@ -38,6 +38,7 @@ function getPageNumbers(page: number, totalPages: number): (number | "...")[] {
 }
 
 export default function Results({ results, total, page, pageSize, onPageChange }: ResultsProps) {
+    const location = useLocation();
     const totalPages = Math.ceil(total / pageSize);
     const from = total === 0 ? 0 : (page - 1) * pageSize + 1;
     const to = Math.min(page * pageSize, total);
@@ -62,9 +63,9 @@ export default function Results({ results, total, page, pageSize, onPageChange }
                     </div>
                 )}
                 {results.map((entry) => (
-                    <Link
+                    <NavLink
                         key={entry.pdbId}
-                        to={`/entry/${entry.pdbId}`}
+                        to={{ pathname: `/entry/${entry.pdbId}`, search: location.search}}
                         className="border-b border-b-[#2E2E2B] flex px-6 py-4 last:border-b-0 hover:bg-[#1E1E1C] transition-colors"
                     >
                         <div className="mr-4 w-20 shrink-0">
@@ -84,7 +85,7 @@ export default function Results({ results, total, page, pageSize, onPageChange }
                                 </div>
                             )}
                         </div>
-                    </Link>
+                    </NavLink>
                 ))}
             </div>
             {totalPages > 1 && (

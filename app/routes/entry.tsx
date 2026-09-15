@@ -10,3 +10,5 @@ export default function Entry() {
         />
     )
 }
+
+export const handle = { fullWidth: true };
