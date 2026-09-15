@@ -4,7 +4,20 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [tailwindcss(), reactRouter()],
-  resolve: {
-    tsconfigPaths: true,
+  build: { target: "esnext" },
+  server: {
+    headers: {
+      "Cross-Origin-Opener-Policy": "same-origin",
+      "Cross-Origin-Embedder-Policy": "require-corp",
+    },
+    watch: {
+      ignored: [
+        "**/public/baby-gru/**",
+        "**/public/moorhen-embed/**",
+        "**/public/**.wasm",
+        "**/public/**.data",
+      ],
+    },
   },
+  resolve: { tsconfigPaths: true },
 });

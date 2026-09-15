@@ -5,6 +5,7 @@ export default [
         index("routes/structure-query.tsx"),
         route("questions", "routes/questions.tsx"),
         route("report", "routes/report.tsx"),
+        route("entry/:pdbId", "routes/entry.tsx"),
     ]),
     route("api/search", "routes/api/api.search.ts"),
     route("api/report", "routes/api/api.report.ts")

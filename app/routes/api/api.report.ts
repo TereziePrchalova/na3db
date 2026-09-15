@@ -21,8 +21,6 @@ export async function loader({ request }: { request: Request }) {
         assignedNtc:         p.get("assignedNtc")         ?? undefined,
         confalScoreMin:      p.get("confalScoreMin")      ?? undefined,
         confalScoreMax:      p.get("confalScoreMax")      ?? undefined,
-        helixLengthMin:      p.get("helixLengthMin")      ?? undefined,
-        helixLengthMax:      p.get("helixLengthMax")      ?? undefined,
         polymerType:         p.get("polymerType")         ?? undefined,
         monomerFlag:         p.get("monomerFlag")         ?? undefined,
       },

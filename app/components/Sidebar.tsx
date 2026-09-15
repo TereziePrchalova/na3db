@@ -13,8 +13,8 @@ export default function Sidebar() {
                 >
                     <img src="/logo_ibt.svg" alt="IBT logo" className="w-8 h-auto"/>
                 </Link>
-                <SidebarItem src="/search.svg" alt="Search" to="/"/>
-                <SidebarItem src="/Q.png" alt="Questions" width="w-5" to="/questions"/>
+                <SidebarItem src="/search.svg" alt="Search" to={{ pathname: "/", search: location.search}} />
+                <SidebarItem src="/Q.png" alt="Questions" width="w-5" to={{ pathname: "/questions", search: location.search }}/>
                 <SidebarItem src="/report.svg" alt="Report" to={{ pathname: "/report", search: location.search }}/>
             </div>
 
