@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:16
+    image: docker.io/library/postgres:16
     container_name: na3db-db
     restart: unless-stopped
     environment:
